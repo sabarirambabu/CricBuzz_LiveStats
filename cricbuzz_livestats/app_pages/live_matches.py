@@ -14,6 +14,23 @@ def get_scorecard(match_id):
         return res.json()
     except Exception as e:
         return {"error": str(e)}
+    
+def normalize_overs(overs):
+    """
+    Converts cricket overs like 19.6 → 20.0
+    Keeps valid values like 10.4 unchanged
+    """
+    try:
+        overs = float(overs)
+        whole = int(overs)
+        balls = round((overs - whole) * 10)
+
+        if balls == 6:
+            return f"{whole + 1}.0"
+        else:
+            return f"{whole}.{balls}"
+    except:
+        return overs
 
 
 def show():
@@ -39,6 +56,8 @@ def show():
             for m in iterable:
                 info = m.get("matchInfo", {})
                 score = m.get("matchScore", {})
+                if not score or not isinstance(score, dict) or len(score) == 0:
+                    continue
 
                 live_matches.append({
                     "id": info.get("matchId"),
@@ -49,10 +68,11 @@ def show():
                     "scoreBlock": score
                 })
 
+
     if not live_matches:
         st.error("⚠️ No live matches available.")
         return
-
+    
     match_list = [m["teams"] for m in live_matches]
     selected = st.selectbox("Select Match", match_list)
     match = live_matches[match_list.index(selected)]
@@ -75,7 +95,7 @@ def show():
                 "InningNum": inning_number,
                 "TeamOrder": 1 if team_name == team1_name else 2,
                 "Score": f"{inng.get('runs','-')}/{inng.get('wickets','-')} "
-                         f"({inng.get('overs','-')} ov)"
+                         f"({normalize_overs(inng.get('overs','-'))} ov)"
             })
 
     rows = sorted(rows, key=lambda x: (x["InningNum"], x["TeamOrder"]))
