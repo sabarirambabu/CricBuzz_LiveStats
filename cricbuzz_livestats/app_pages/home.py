@@ -1,7 +1,7 @@
 import streamlit as st
 
 def show():
-    st.title("🏏 Cricbuzz LiveStats")
+    st.title("🏏 Home")
     st.subheader("Cricket Analytics Dashboard")
 
     st.markdown("---")
@@ -23,10 +23,10 @@ def show():
     st.markdown("""
     ### 🧰 Tools & Technologies Used
     - **Python**
-    - **Streamlit**
+    - **MySQL**
     - **Pandas**
     - **Requests**
-    - **MySQL**
+    - **Streamlit**
     - **Cricbuzz API (RapidAPI)**
     - **Git & GitHub**
     """)
